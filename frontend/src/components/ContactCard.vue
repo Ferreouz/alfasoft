@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Contact } from '../types/Contact'
 import { RouterLink } from 'vue-router'
+import { useRouter } from 'vue-router'
 
 defineProps<{
   contact: Contact
@@ -9,10 +10,17 @@ defineProps<{
 const emit = defineEmits<{
   (e: 'delete', id: string | number): void
 }>()
+
+const router = useRouter();
+
+function goToDetails(id: string | number) {
+  router.push(`/contacts/${id}`)
+}
 </script>
 
 <template>
   <div
+    @click="goToDetails(contact.id)"
     class="
       w-full max-w-[260px]
       rounded-2xl
@@ -24,6 +32,7 @@ const emit = defineEmits<{
       transition
       hover:-translate-y-1
       hover:shadow-xl
+      cursor-pointer
     "
   >
     <!-- Details link -->
