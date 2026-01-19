@@ -7,38 +7,42 @@ defineProps<{
 </script>
 
 <template>
-  <div class="card">
-    <img :src="contact.picture" alt="Contact picture" />
+  <div class="
+      w-full max-w-[260px]
+      rounded-2xl
+      bg-zinc-900
+      border border-zinc-800
+      p-4
+      text-center
+      shadow-lg
+      transition
+      hover:-translate-y-1
+      hover:shadow-xl
+    ">
+    <img :src="contact.picture" alt="Contact picture" class="
+        mb-3
+        h-[180px]
+        w-full
+        rounded-xl
+        object-cover
+      " />
 
-    <h3>{{ contact.name }}</h3>
+    <h3 class="my-2 text-lg font-semibold text-zinc-100">
+      {{ contact.name }}
+    </h3>
 
-    <p><strong>Phone:</strong> {{ contact.contact }}</p>
-    <p><strong>Email:</strong> {{ contact.email }}</p>
-    <p><strong>ID:</strong> {{ contact.id }}</p>
+    <div class="space-y-1 text-sm text-zinc-400">
+      <p>
+        <span class="font-medium text-zinc-300">Phone:</span>
+        {{ contact.contact }}
+      </p>
+      <p>
+        <span class="font-medium text-zinc-300">Email:</span>
+        {{ contact.email }}
+      </p>
+      <p class="text-xs text-zinc-500">
+        ID: {{ contact.id }}
+      </p>
+    </div>
   </div>
 </template>
-
-<style scoped>
-.card {
-  width: 260px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  padding: 16px;
-  background: #fff;
-  text-align: center;
-}
-
-.card img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 12px;
-}
-
-h3 {
-  margin: 8px 0;
-}
-</style>
-
-
