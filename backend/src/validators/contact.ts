@@ -35,5 +35,9 @@ export function validateNewContact(contact: CreateContactInput): ValidationResul
 }
 
 export function validateContactUpdate(contact: UpdateContactInput): ValidationResult {
-  return validateContactFormats(contact);
+  return validateContactFormats(contact as {
+    name?: string;
+    contact?: string;
+    email?: string;
+  });
 }

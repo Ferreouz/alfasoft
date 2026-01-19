@@ -1,10 +1,11 @@
-import { Router } from "express";
+import { Router, json } from "express";
 import prisma from "../../prisma";
 import { validateNewContact, validateContactUpdate } from "../../validators/contact";
 import { Prisma } from "@prisma/client";
 import { handlePrismaError } from "./prismaErrors";
 
 const router = Router();
+router.use(json());
 
 /**
  * GET /contacts
@@ -41,10 +42,10 @@ router.get("/:id", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     const { id, ...data } = req.body;
-    const { valid, message } = validateNewContact(data);
+    const validation = validateNewContact(data);
 
-    if (!valid) {
-      return res.status(400).json({ error: message });
+    if (!validation.valid) {
+      return res.status(400).json({ error: validation.message });
     }
 
     const contact = await prisma.contact.create({
@@ -77,10 +78,10 @@ router.put("/:id", async (req, res) => {
 
   try {
     const { id, ...data } = req.body;
-    const { valid, message } = validateContactUpdate(data);
+    const validation = validateContactUpdate(data);
 
-    if (!valid) {
-      return res.status(400).json({ error: message });
+    if (!validation.valid) {
+      return res.status(400).json({ error: validation.message });
     }
 
     const contact = await prisma.contact.update({
