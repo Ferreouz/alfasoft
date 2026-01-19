@@ -8,6 +8,7 @@ function validateContactFormats(contact: {
   name?: string;
   contact?: string;
   email?: string;
+  picture?: string;
 }): ValidationResult {
 
   if (contact.name && contact.name.length <= 5) {
@@ -22,11 +23,18 @@ function validateContactFormats(contact: {
     return { valid: false, message: "Invalid email address" };
   }
 
+  if (contact.picture && !isValidHttpUrl(contact.picture)) {
+    return { valid: false, message: "Picture must be a valid URL" };
+  }
+
   return { valid: true };
 }
 
 export function validateNewContact(contact: CreateContactInput): ValidationResult {
   if (!contact.picture) return { valid: false, message: "Picture is required" };
+  if (!isValidHttpUrl(contact.picture)) {
+    return { valid: false, message: "Picture must be a valid URL" };
+  }
   if (!contact.name) return { valid: false, message: "Name is required" };
   if (!contact.contact) return { valid: false, message: "Contact field is required" };
   if (!contact.email) return { valid: false, message: "Email field is required" };
@@ -39,5 +47,14 @@ export function validateContactUpdate(contact: UpdateContactInput): ValidationRe
     name?: string;
     contact?: string;
     email?: string;
+    picture?: string;
   });
+}
+function isValidHttpUrl(value: string): boolean { 
+  try { 
+    const url = new URL(value); 
+    return url.protocol === "http:" || url.protocol === "https:"; 
+  } catch { 
+    return false; 
+  } 
 }
