@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import ContactDetailsView from '../views/ContactDetailsView.vue'
 import ContactFormView from '../views/ContactFormView.vue'
+import NotFoundView from '../views/NotFoundView.vue'
 
 export default createRouter({
   history: createWebHistory(),
@@ -25,5 +26,14 @@ export default createRouter({
       path: '/contacts/new',
       component: ContactFormView
     },
+    {
+      path: '/404',
+      name: 'not-found',
+      component: NotFoundView
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: '/404'
+    }
   ]
 })

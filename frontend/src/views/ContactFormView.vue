@@ -3,15 +3,20 @@ import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import contactsApi from '../api/contacts'
 import type { Contact } from '../types/Contact'
+import validateContact  from '../validators/validateContact'
+import MessageModal from '../components/MessageModal.vue'
 
-const route = useRoute()
-const router = useRouter()
+const route = useRoute();
+const router = useRouter();
 
-const contactId = route.params.id as string | undefined
-const isEdit = computed(() => !!contactId)
+const contactId = route.params.id as string | undefined;
+const isEdit = computed(() => !!contactId);
 
-const loading = ref(false)
-const error = ref<string | null>(null)
+const loading = ref(false);
+const error = ref<string | null>(null);
+const showMessageModal = ref(false);
+const modalMessage = ref('');
+
 
 /**
  * Form state
@@ -32,6 +37,10 @@ onMounted(async () => {
         const data = await contactsApi.getContactById(contactId!)
         form.value = { ...data }
     } catch (err) {
+        if(err.status === 404) {
+            router.replace('/404')
+            return
+        }
         error.value = 'Failed to load contact'
     } finally {
         loading.value = false
@@ -43,19 +52,29 @@ async function submit() {
     loading.value = true
 
     try {
-        if (isEdit.value) {
-            const contactUpdate = form.value as Contact;
-            contactUpdate.id = contactId!;
-            await contactsApi.updateContact(contactUpdate)
-        } else {
-            await contactsApi.createContact(form.value)
+        const contactData = {
+            ...form.value,
+            id: contactId
+        } as Contact;
+
+        const { valid, message } = validateContact(contactData);
+
+        if (!valid) {
+            throw new Error(message);
         }
 
-        router.push('/')
-    } catch (err) {
-        error.value = 'Failed to save contact'
+        if (isEdit.value) {
+            await contactsApi.updateContact(contactData);
+        } else {
+            await contactsApi.createContact(contactData);
+        }
+
+        router.push('/');
+    } catch (err: any) {
+        modalMessage.value = err.message || 'Something went wrong'
+        showMessageModal.value = true
     } finally {
-        loading.value = false
+        loading.value = false;
     }
 }
 </script>
@@ -162,4 +181,11 @@ async function submit() {
             </form>
         </div>
     </div>
+    <MessageModal
+        :open="showMessageModal"
+        title="Error"
+        :message="modalMessage"
+        variant="error"
+        @close="showMessageModal = false"
+    />
 </template>
