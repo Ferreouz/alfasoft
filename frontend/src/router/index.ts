@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import ContactDetailsView from '../views/ContactDetailsView.vue'
+import ContactFormView from '../views/ContactFormView.vue'
 
 export default createRouter({
   history: createWebHistory(),
@@ -15,6 +16,14 @@ export default createRouter({
       name: 'contact-details',
       component: ContactDetailsView,
       props: true
+    },
+    {
+      path: '/contacts/:id/edit',
+      component: ContactFormView
+    },
+    {
+      path: '/contacts/new',
+      component: ContactFormView
     },
   ]
 })
