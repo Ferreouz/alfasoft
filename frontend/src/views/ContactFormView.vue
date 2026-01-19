@@ -5,12 +5,16 @@ import contactsApi from '../api/contacts'
 import type { Contact } from '../types/Contact'
 import validateContact  from '../validators/validateContact'
 import MessageModal from '../components/MessageModal.vue'
+import { watch } from 'vue';
+const props = defineProps<{
+  id: string | null
+}>()
 
 const route = useRoute();
 const router = useRouter();
 
 const contactId = route.params.id as string | undefined;
-const isEdit = computed(() => !!contactId);
+const isEdit = computed(() => !!props.id)
 
 const loading = ref(false);
 const error = ref<string | null>(null);
@@ -76,6 +80,23 @@ async function submit() {
     } finally {
         loading.value = false;
     }
+}
+watch(
+  () => props.id,
+  async (id) => {
+    resetForm()
+    if (!id) return
+    form.value = await contactsApi.getContactById(id)
+  },
+  { immediate: true }
+)
+function resetForm() {
+  form.value = {
+    name: '',
+    contact: '',
+    email: '',
+    picture: ''
+  }
 }
 </script>
 

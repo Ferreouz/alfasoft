@@ -30,7 +30,8 @@ export default createRouter({
       component: ContactFormView,
       meta: {
         title: 'Edit Contact',
-      }
+      },
+      props: true
     },
     {
       path: '/contacts/new',
@@ -38,7 +39,8 @@ export default createRouter({
       meta: {
         title: 'New Contact',
         showNewContact: false
-      }
+      },
+      props: { id: null }
     },
     {
       path: '/404',
