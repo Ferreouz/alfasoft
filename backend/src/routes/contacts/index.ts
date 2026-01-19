@@ -36,10 +36,11 @@ router.get("/:id", async (req, res) => {
  */
 router.post("/", async (req, res) => {
   try {
-    validateContact(req.body);
+    const { id, ...data } = req.body;
+    validateContact(data);
 
     const contact = await prisma.contact.create({
-      data: req.body
+      data
     });
 
     res.status(201).json(contact);
@@ -60,14 +61,16 @@ router.post("/", async (req, res) => {
  * PUT /contacts/:id
  */
 router.put("/:id", async (req, res) => {
-  const id = Number(req.params.id);
+  const idUpdate = Number(req.params.id);
 
   try {
     validateContact(req.body);
 
+    const { id, ...data } = req.body;
+
     const contact = await prisma.contact.update({
-      where: { id },
-      data: req.body
+      where: { id: idUpdate },
+      data
     });
 
     res.json(contact);
