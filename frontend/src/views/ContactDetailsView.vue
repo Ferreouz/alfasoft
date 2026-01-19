@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import contactsApi from '../api/contacts'
 import type { Contact } from '../types/Contact'
 import ConfirmModal from '../components/ConfirmModal.vue'
+import PageHeader from '../components/PageHeader.vue'
 
 const route = useRoute();
 const router = useRouter();
@@ -62,18 +63,6 @@ onMounted(async () => {
 <template>
     <div class="min-h-screen bg-zinc-950 px-6 py-8">
         <div class="mx-auto max-w-3xl">
-            <!-- Header -->
-            <div class="mb-6 flex gap-4">
-                <button @click="router.back()"
-                    class="rounded-lg bg-zinc-800 px-4 py-2 text-sm text-zinc-200 hover:bg-zinc-700 transition">
-                    ← Back
-                </button>
-                <h1 class="text-3xl font-bold text-zinc-100">
-                    Contact Details
-                </h1>
-
-            </div>
-
             <!-- Loading -->
             <p v-if="loading" class="text-zinc-400">
                 Loading contact...

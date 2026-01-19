@@ -82,18 +82,6 @@ async function submit() {
 <template>
     <div class="min-h-screen bg-zinc-950 px-6 py-8">
         <div class="mx-auto max-w-2xl">
-            <!-- Header -->
-            <div class="mb-6 flex items-center gap-4">
-                <button @click="router.back()"
-                    class="rounded-lg bg-zinc-800 px-4 py-2 text-sm text-zinc-200 hover:bg-zinc-700 transition">
-                    ← Back
-                </button>
-
-                <h1 class="text-3xl font-bold text-zinc-100">
-                    {{ isEdit ? 'Edit Contact' : 'Create Contact' }}
-                </h1>
-            </div>
-
             <!-- Error -->
             <p v-if="error" class="mb-4 text-red-500">
                 {{ error }}
