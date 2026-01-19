@@ -1,6 +1,8 @@
 import { Router } from "express";
-import prisma from "../prisma";
-import { validateContact } from "../validators/contact";
+import prisma from "../../prisma";
+import { validateContact } from "../../validators/contact";
+import { Prisma } from "@prisma/client";
+import { handlePrismaError } from "./prismaErrors";
 
 const router = Router();
 
@@ -42,7 +44,15 @@ router.post("/", async (req, res) => {
 
     res.status(201).json(contact);
   } catch (err: any) {
-    res.status(400).json({ error: err.message });
+    console.log('Unable to create contact:', err);
+    const prismaError = handlePrismaError(err);
+
+    if (prismaError) {
+      return res
+        .status(prismaError.status)
+        .json({ error: prismaError.message });
+    }
+    res.status(400).json({ error: "Unable to create contact" });
   }
 });
 
@@ -62,10 +72,15 @@ router.put("/:id", async (req, res) => {
 
     res.json(contact);
   } catch (err: any) {
-    if (err.code === "P2025") {
-      return res.status(404).json({ error: "Contact not found" });
+    console.log('Unable to update contact:', err);
+    const prismaError = handlePrismaError(err);
+
+    if (prismaError) {
+      return res
+        .status(prismaError.status)
+        .json({ error: prismaError.message });
     }
-    res.status(400).json({ error: err.message });
+    res.status(400).json({ error: "Unable to update contact" });
   }
 });
 
@@ -82,8 +97,13 @@ router.delete("/:id", async (req, res) => {
 
     res.status(204).send();
   } catch (err: any) {
-    if (err.code === "P2025") {
-      return res.status(404).json({ error: "Contact not found" });
+ console.log('Unable to delete contact:', err);
+    const prismaError = handlePrismaError(err);
+
+    if (prismaError) {
+      return res
+        .status(prismaError.status)
+        .json({ error: prismaError.message });
     }
     res.status(400).json({ error: "Unable to delete contact" });
   }
