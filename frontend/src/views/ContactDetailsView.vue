@@ -134,11 +134,6 @@ onMounted(async () => {
                                 class="rounded-lg bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-500 transition cursor-pointer">
                                 Delete
                             </button>
-
-                            <RouterLink to="/"
-                                class="rounded-lg bg-zinc-800 px-4 py-2 text-sm text-zinc-200 hover:bg-zinc-700 transition cursor-pointer">
-                                Back to list
-                            </RouterLink>
                         </div>
 
                     </div>
