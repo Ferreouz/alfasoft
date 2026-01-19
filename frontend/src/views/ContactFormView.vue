@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import contactsApi from '../api/contacts'
+import contactsApi, { isApiError, type ApiError } from '../api/contacts'
 import type { Contact } from '../types/Contact'
 import validateContact  from '../validators/validateContact'
 import MessageModal from '../components/MessageModal.vue'
@@ -38,13 +38,15 @@ onMounted(async () => {
 
     loading.value = true
     try {
-        const data = await contactsApi.getContactById(contactId!)
+        const data = await contactsApi.getContactById(Number(contactId!))
         form.value = { ...data }
     } catch (err) {
-        if(err.status === 404) {
+
+        if (isApiError(err) && err.status === 404) {
             router.replace('/404')
             return
         }
+
         error.value = 'Failed to load contact'
     } finally {
         loading.value = false
@@ -59,7 +61,7 @@ async function submit() {
         const contactData = {
             ...form.value,
             id: contactId
-        } as Contact;
+        } as unknown as Contact;
 
         const { valid, message } = validateContact(contactData);
 
@@ -86,7 +88,7 @@ watch(
   async (id) => {
     resetForm()
     if (!id) return
-    form.value = await contactsApi.getContactById(id)
+    form.value = await contactsApi.getContactById(Number(id))
   },
   { immediate: true }
 )

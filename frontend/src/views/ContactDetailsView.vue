@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import contactsApi from '../api/contacts'
+import contactsApi, { isApiError } from '../api/contacts'
 import type { Contact } from '../types/Contact'
 import ConfirmModal from '../components/ConfirmModal.vue'
 import PageHeader from '../components/PageHeader.vue'
@@ -41,16 +41,14 @@ async function confirmDelete() {
     }
 }
 
-import type { AxiosError } from 'axios';
-
 onMounted(async () => {
   try {
-    contact.value = await contactsApi.getContactById(contactId);
+    contact.value = await contactsApi.getContactById(Number(contactId));
   } catch (err) {
-    if(err.status === 404) {
+    if (isApiError(err) && err.status === 404) {
         router.replace('/404');
         return;
-    } else {
+    }else {
       error.value = 'Failed to fetch contact';
     }
   } finally {

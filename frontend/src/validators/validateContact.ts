@@ -1,4 +1,6 @@
-export default function validateContact(contact: Contact) {
+import type { Contact } from "@/types/Contact";
+
+export default function validateContact(contact: Contact | Omit<Contact, 'id'>): {valid: boolean, message?: string} {
   if (!contact.picture) {
     return {valid: false, message: 'Picture is required'}
 

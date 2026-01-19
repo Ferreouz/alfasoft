@@ -2,12 +2,24 @@ import type { Contact } from '@/types/Contact'
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL + '/contacts';
 
+export interface ApiError {
+  status: number
+  message: string
+}
+
+export function isApiError(error: any): error is ApiError {
+  return error && typeof error.status === 'number' && typeof error.message === 'string'
+}
+
 const api = {
   async getContacts(): Promise<Contact[]> {
     const response = await fetch(`${BASE_URL}`);
 
     if (!response.ok) {
-      return Promise.reject({ status: response.status, message: 'Failed to fetch contacts' });
+      throw {
+        status: response.status,
+        message: 'Failed to fetch contacts',
+      } as ApiError;
     }
 
     return response.json()
@@ -17,7 +29,10 @@ const api = {
     const response = await fetch(`${BASE_URL}/${id}`);
 
     if (!response.ok) {
-      return Promise.reject({ status: response.status, message: 'Failed to fetch contact' });
+      throw {
+        status: response.status,
+        message: 'Failed to fetch contact',
+      } as ApiError
     }
 
     return response.json()
@@ -33,7 +48,10 @@ const api = {
     });
 
     if (!response.ok) {
-      return Promise.reject({ status: response.status, message: 'Failed to create contact' });
+      throw {
+        status: response.status,
+        message: 'Failed to create contact',
+      } as ApiError;
     }
 
     return response.json()
@@ -49,7 +67,10 @@ const api = {
     });
 
     if (!response.ok) {
-      return Promise.reject({ status: response.status, message: 'Failed to update contact' });
+      throw {
+        status: response.status,
+        message: 'Failed to update contact',
+      } as ApiError;
     }
 
     return response.json()
@@ -61,7 +82,10 @@ const api = {
     });
 
     if (!response.ok) {
-      return Promise.reject({ status: response.status, message: 'Failed to delete contact' });
+      throw {
+        status: response.status,
+        message: 'Failed to delete contact',
+      } as ApiError;
     }
   }
 }
