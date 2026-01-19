@@ -9,6 +9,10 @@ export default createRouter({
   routes: [
     {
       path: '/',
+      redirect: '/app'
+    },
+    {
+      path: '/app',
       name: 'home',
       component: HomeView,
       meta: {
@@ -17,7 +21,7 @@ export default createRouter({
       }
     },
     {
-      path: '/contacts/:id',
+      path: '/app/contacts/:id',
       name: 'contact-details',
       component: ContactDetailsView,
       props: true,
@@ -26,7 +30,7 @@ export default createRouter({
       }
     },
     {
-      path: '/contacts/:id/edit',
+      path: '/app/contacts/:id/edit',
       component: ContactFormView,
       meta: {
         title: 'Edit Contact',
@@ -34,7 +38,7 @@ export default createRouter({
       props: true
     },
     {
-      path: '/contacts/new',
+      path: '/app/contacts/new',
       component: ContactFormView,
       meta: {
         title: 'New Contact',

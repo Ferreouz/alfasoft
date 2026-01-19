@@ -23,7 +23,7 @@ const router = useRouter()
 
     <!-- Optional right-side actions -->
     <div class="ml-auto">
-      <RouterLink v-if="showNewContact" to="/contacts/new" class="
+      <RouterLink v-if="showNewContact" to="/app/contacts/new" class="
             inline-flex items-center gap-2
             rounded-lg bg-blue-600 px-4 py-2
             text-sm font-medium text-white

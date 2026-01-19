@@ -14,7 +14,7 @@ const emit = defineEmits<{
 const router = useRouter();
 
 function goToDetails(id: string | number) {
-  router.push(`/contacts/${id}`)
+  router.push(`/app/contacts/${id}`)
 }
 </script>
 
@@ -59,12 +59,12 @@ function goToDetails(id: string | number) {
 
     <!-- Actions -->
     <div class="mt-4 flex justify-between gap-2">
-      <RouterLink :to="`/contacts/${contact.id}`"
+      <RouterLink :to="`/app/contacts/${contact.id}`"
         class="flex-1 rounded-lg bg-zinc-800 px-3 py-1.5 text-sm text-zinc-200 hover:bg-zinc-700 transition">
         Details
       </RouterLink>
 
-      <RouterLink :to="`/contacts/${contact.id}/edit`"
+      <RouterLink :to="`/app/contacts/${contact.id}/edit`"
         class="flex-1 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-500 transition">
         Edit
       </RouterLink>

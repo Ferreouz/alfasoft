@@ -115,7 +115,7 @@ onMounted(async () => {
 
                         <!-- Actions -->
                         <div class="mt-6 flex gap-3">
-                            <RouterLink :to="`/contacts/${contact.id}/edit`"
+                            <RouterLink :to="`/app/contacts/${contact.id}/edit`"
                                 class="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-500 transition cursor-pointer">
                                 Edit
                             </RouterLink>
