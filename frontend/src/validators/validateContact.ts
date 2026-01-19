@@ -1,21 +1,43 @@
 import type { Contact } from "@/types/Contact";
+import isValidImageUrl from "./isValidImageUrl"
 
-export default function validateContact(contact: Contact | Omit<Contact, 'id'>): {valid: boolean, message?: string} {
+type ContactErrors = Partial<Record<keyof Omit<Contact, 'id'>, string>>
+
+export default async function validateContact(
+  contact: Contact | Omit<Contact, 'id'>
+): Promise<{
+  valid: boolean
+  message?: string
+  errors: ContactErrors
+}> {
+  const errors: ContactErrors = {}
+
   if (!contact.picture) {
-    return {valid: false, message: 'Picture is required'}
-
+    errors.picture = 'Picture is required'
+  } else {
+    const isImage = await isValidImageUrl(contact.picture)
+    if (!isImage) {
+      errors.picture = 'URL must point to a valid image'
+    }
   }
 
   if (!contact.name || contact.name.length <= 5) {
-    return {valid: false, message: 'Name must be longer than 5 characters'}
+    errors.name = 'Name must be longer than 5 characters'
   }
 
   if (!/^\d{9}$/.test(contact.contact)) {
-    return {valid: false, message: 'Contact must have exactly 9 digits'}
+    errors.contact = 'Contact must have exactly 9 digits'
   }
 
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.email)) {
-    return {valid: false, message: 'Invalid email address'}
+    errors.email = 'Invalid email address'
   }
-  return {valid: true};
+
+  const valid = Object.keys(errors).length === 0
+
+  return {
+    valid,
+    errors,
+    message: valid ? undefined : Object.values(errors)[0]
+  }
 }

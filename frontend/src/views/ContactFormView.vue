@@ -3,11 +3,11 @@ import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import contactsApi, { isApiError, type ApiError } from '../api/contacts'
 import type { Contact } from '../types/Contact'
-import validateContact  from '../validators/validateContact'
+import validateContact from '../validators/validateContact'
 import MessageModal from '../components/MessageModal.vue'
 import { watch } from 'vue';
 const props = defineProps<{
-  id: string | null
+    id: string | null
 }>()
 
 const route = useRoute();
@@ -20,6 +20,7 @@ const loading = ref(false);
 const error = ref<string | null>(null);
 const showMessageModal = ref(false);
 const modalMessage = ref('');
+const errors = ref<Record<string, string>>({});
 
 
 /**
@@ -63,10 +64,11 @@ async function submit() {
             id: contactId
         } as unknown as Contact;
 
-        const { valid, message } = validateContact(contactData);
+        const result = await validateContact(contactData);
 
-        if (!valid) {
-            throw new Error(message);
+        if (!result.valid) {
+            errors.value = result.errors
+            throw new Error(Object.values(result.errors).join(', '));
         }
 
         if (isEdit.value) {
@@ -84,21 +86,21 @@ async function submit() {
     }
 }
 watch(
-  () => props.id,
-  async (id) => {
-    resetForm()
-    if (!id) return
-    form.value = await contactsApi.getContactById(Number(id))
-  },
-  { immediate: true }
+    () => props.id,
+    async (id) => {
+        resetForm()
+        if (!id) return
+        form.value = await contactsApi.getContactById(Number(id))
+    },
+    { immediate: true }
 )
 function resetForm() {
-  form.value = {
-    name: '',
-    contact: '',
-    email: '',
-    picture: ''
-  }
+    form.value = {
+        name: '',
+        contact: '',
+        email: '',
+        picture: ''
+    }
 }
 </script>
 
@@ -121,7 +123,7 @@ function resetForm() {
         ">
                 <!-- Name -->
                 <div>
-                    <label class="mb-1 block text-sm font-medium text-zinc-400">
+                    <label :class="errors.name ? 'text-red-500' : 'text-zinc-400'">
                         Name
                     </label>
                     <input v-model="form.name" required type="text" class="
@@ -129,23 +131,29 @@ function resetForm() {
               px-4 py-2 text-zinc-100
               focus:border-blue-500 focus:outline-none
             " />
+                    <p v-if="errors.name" class="mt-1 text-xs text-red-500">
+                        {{ errors.name }}
+                    </p>
                 </div>
 
                 <!-- Phone -->
                 <div>
-                    <label class="mb-1 block text-sm font-medium text-zinc-400">
-                        Phone
+                    <label  :class="errors.contact ? 'text-red-500' : 'text-zinc-400'">
+                        Contact
                     </label>
                     <input v-model="form.contact" required type="text" class="
               w-full rounded-lg bg-zinc-800 border border-zinc-700
               px-4 py-2 text-zinc-100
               focus:border-blue-500 focus:outline-none
             " />
+                  <p v-if="errors.contact" class="mt-1 text-xs text-red-500">
+                        {{ errors.contact }}
+                    </p>
                 </div>
 
                 <!-- Email -->
                 <div>
-                    <label class="mb-1 block text-sm font-medium text-zinc-400">
+                    <label  :class="errors.email ? 'text-red-500' : 'text-zinc-400'">
                         Email
                     </label>
                     <input v-model="form.email" type="email" class="
@@ -153,11 +161,14 @@ function resetForm() {
               px-4 py-2 text-zinc-100
               focus:border-blue-500 focus:outline-none
             " />
+                 <p v-if="errors.email" class="mt-1 text-xs text-red-500">
+                        {{ errors.email }}
+                    </p>
                 </div>
 
                 <!-- Picture URL -->
                 <div>
-                    <label class="mb-1 block text-sm font-medium text-zinc-400">
+                    <label  :class="errors.picture ? 'text-red-500' : 'text-zinc-400'">
                         Picture URL
                     </label>
                     <input v-model="form.picture" type="url" class="
@@ -165,6 +176,9 @@ function resetForm() {
               px-4 py-2 text-zinc-100
               focus:border-blue-500 focus:outline-none
             " />
+                <p v-if="errors.picture" class="mt-1 text-xs text-red-500">
+                    {{ errors.picture }}
+                </p>
                 </div>
 
                 <!-- Preview -->
@@ -192,11 +206,6 @@ function resetForm() {
             </form>
         </div>
     </div>
-    <MessageModal
-        :open="showMessageModal"
-        title="Error"
-        :message="modalMessage"
-        variant="error"
-        @close="showMessageModal = false"
-    />
+    <MessageModal :open="showMessageModal" title="Error" :message="modalMessage" variant="error"
+        @close="showMessageModal = false" />
 </template>
