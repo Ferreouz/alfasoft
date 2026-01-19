@@ -46,8 +46,9 @@ onMounted(async () => {
   try {
     contact.value = await contactsApi.getContactById(contactId);
   } catch (err) {
-    if (err?.status === 404) {
-      contact.value = null;
+    if(err.status === 404) {
+        router.replace('/404');
+        return;
     } else {
       error.value = 'Failed to fetch contact';
     }
