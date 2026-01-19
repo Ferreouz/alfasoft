@@ -76,7 +76,7 @@ onMounted(async () => {
     </div>
 
     <ConfirmModal :open="showDeleteModal" title="Delete contact"
-        :message="`Are you sure you want to delete ${contactToDelete?.name}?`" confirm-text="Delete" confirm-variant="danger"
+        :message="`Are you sure you want to delete '${contactToDelete?.name}?'`" confirm-text="Delete" confirm-variant="danger"
         @confirm="confirmDelete" @cancel="cancelDelete" />
 
 
