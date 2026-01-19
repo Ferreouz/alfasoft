@@ -17,7 +17,7 @@ datasource db {
 model Contact {
   id        Int      @id @default(autoincrement())
   name      String
-  contact   String  @db.Char(9)
+  contact   String  @db.Char(9) @unique
   email     String  @unique
   picture   String
   createdAt DateTime @default(now())
