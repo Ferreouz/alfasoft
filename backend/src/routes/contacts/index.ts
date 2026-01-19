@@ -1,6 +1,6 @@
 import { Router } from "express";
 import prisma from "../../prisma";
-import { validateContact } from "../../validators/contact";
+import { validateNewContact, validateContactUpdate } from "../../validators/contact";
 import { Prisma } from "@prisma/client";
 import { handlePrismaError } from "./prismaErrors";
 
@@ -20,6 +20,10 @@ router.get("/", async (_req, res) => {
 router.get("/:id", async (req, res) => {
   const id = Number(req.params.id);
 
+  if (isNaN(id)) {
+    return res.status(400).json({ error: "Invalid contact ID" });
+  }
+
   const contact = await prisma.contact.findUnique({
     where: { id }
   });
@@ -37,7 +41,11 @@ router.get("/:id", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     const { id, ...data } = req.body;
-    validateContact(data);
+    const { valid, message } = validateNewContact(data);
+
+    if (!valid) {
+      return res.status(400).json({ error: message });
+    }
 
     const contact = await prisma.contact.create({
       data
@@ -63,10 +71,17 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   const idUpdate = Number(req.params.id);
 
-  try {
-    validateContact(req.body);
+  if (isNaN(idUpdate)) {
+    return res.status(400).json({ error: "Invalid contact ID" });
+  }
 
+  try {
     const { id, ...data } = req.body;
+    const { valid, message } = validateContactUpdate(data);
+
+    if (!valid) {
+      return res.status(400).json({ error: message });
+    }
 
     const contact = await prisma.contact.update({
       where: { id: idUpdate },
@@ -92,6 +107,10 @@ router.put("/:id", async (req, res) => {
  */
 router.delete("/:id", async (req, res) => {
   const id = Number(req.params.id);
+
+  if (isNaN(id)) {
+    return res.status(400).json({ error: "Invalid contact ID" });
+  }
 
   try {
     await prisma.contact.delete({
